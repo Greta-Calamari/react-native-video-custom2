@@ -38,6 +38,7 @@ import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil;
 import com.google.android.exoplayer2.metadata.Metadata;
@@ -140,6 +141,7 @@ class ReactExoplayerView extends FrameLayout implements
     private boolean disableFocus;
     private float mProgressUpdateInterval = 250.0f;
     private boolean playInBackground = false;
+    private boolean earPiece = false;
     private Map<String, String> requestHeaders;
     private boolean mReportBandwidth = false;
     private boolean controls;
@@ -181,10 +183,11 @@ class ReactExoplayerView extends FrameLayout implements
         createViews();
 
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        //audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
         themedReactContext.addLifecycleEventListener(this);
         audioBecomingNoisyReceiver = new AudioBecomingNoisyReceiver(themedReactContext);
 
-        initializePlayer();
+        //initializePlayer();
     }
 
 
@@ -432,6 +435,15 @@ class ReactExoplayerView extends FrameLayout implements
                     PlaybackParameters params = new PlaybackParameters(rate, 1f);
                     player.setPlaybackParameters(params);
                 }
+
+                AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                        .setUsage(earPiece? C.USAGE_VOICE_COMMUNICATION : C.USAGE_MEDIA)
+                        .setContentType(earPiece? C.CONTENT_TYPE_SPEECH:C.CONTENT_TYPE_MUSIC)
+                        .build();
+
+                player.setAudioAttributes(audioAttributes);
+                //deprecated player.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+
                 if (playerNeedsSource && srcUri != null) {
                     ArrayList<MediaSource> mediaSourceList = buildTextSources();
                     MediaSource videoSource = buildMediaSource(srcUri, extension);
@@ -543,11 +555,13 @@ class ReactExoplayerView extends FrameLayout implements
     }
 
     private boolean requestAudioFocus() {
+        //audioManager.setMode(earPiece ? AudioManager.MODE_IN_COMMUNICATION : AudioManager.MODE_NORMAL);
         if (disableFocus || srcUri == null) {
             return true;
         }
         int result = audioManager.requestAudioFocus(this,
                 AudioManager.STREAM_MUSIC,
+                //AudioManager.STREAM_VOICE_CALL,
                 AudioManager.AUDIOFOCUS_GAIN);
         return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
@@ -1220,6 +1234,11 @@ class ReactExoplayerView extends FrameLayout implements
         initializePlayer();
     }
 
+    public void setearPiece(boolean earPiece){
+        this.earPiece = earPiece;
+        this.initializePlayer();
+    }
+    
     public void setPlayInBackground(boolean playInBackground) {
         this.playInBackground = playInBackground;
     }
