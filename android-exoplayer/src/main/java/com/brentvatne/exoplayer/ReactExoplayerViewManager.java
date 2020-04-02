@@ -51,6 +51,7 @@ public class ReactExoplayerViewManager extends ViewGroupManager<ReactExoplayerVi
     private static final String PROP_MIN_LOAD_RETRY_COUNT = "minLoadRetryCount";
     private static final String PROP_MAXIMUM_BIT_RATE = "maxBitRate";
     private static final String PROP_PLAY_IN_BACKGROUND = "playInBackground";
+    private static final String PROP_EAR_PIECE = "earPiece";
     private static final String PROP_DISABLE_FOCUS = "disableFocus";
     private static final String PROP_FULLSCREEN = "fullscreen";
     private static final String PROP_USE_TEXTURE_VIEW = "useTextureView";
@@ -138,6 +139,11 @@ public class ReactExoplayerViewManager extends ViewGroupManager<ReactExoplayerVi
                 }
             }
         }
+    }
+
+    @ReactProp(name = PROP_EAR_PIECE, defaultBoolean = false)
+    public void setearPiece(final ReactExoplayerView videoView, final boolean earPiece) {
+        videoView.setearPiece(earPiece);
     }
 
     @ReactProp(name = PROP_RESIZE_MODE)
