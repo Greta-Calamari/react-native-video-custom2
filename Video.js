@@ -79,7 +79,7 @@ export default class Video extends Component {
   }
 
   seek = (time, tolerance = 100) => {
-    if (isNaN(time)) {throw new Error('Specified time is not a number');}
+    if (isNaN(time)) { throw new Error('Specified time is not a number'); }
 
     if (Platform.OS === 'ios') {
       this.setNativeProps({
@@ -360,7 +360,7 @@ export default class Video extends Component {
       <View ref={(videoContainer) => {
         this._videoContainer = videoContainer;
         return videoContainer;
-        }} style={[nativeProps.style, videoStyle]}>
+      }} style={[nativeProps.style, videoStyle]}>
         <RCTVideo
           ref={this._assignRoot}
           {...nativeProps}
@@ -479,6 +479,7 @@ Video.propTypes = {
   rate: PropTypes.number,
   pictureInPicture: PropTypes.bool,
   playInBackground: PropTypes.bool,
+  earPiece: PropTypes.bool,
   playWhenInactive: PropTypes.bool,
   ignoreSilentSwitch: PropTypes.oneOf(['ignore', 'obey']),
   reportBandwidth: PropTypes.bool,
