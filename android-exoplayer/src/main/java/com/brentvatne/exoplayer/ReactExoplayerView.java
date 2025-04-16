@@ -184,6 +184,30 @@ class ReactExoplayerView extends FrameLayout implements
 
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         //audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+        
+        Log.e("TEST", "*********** Questo DEVE uscire ***********");
+        
+        AudioDeviceInfo speakerDevice = null;
+        List devices = audioManager.getAvailableCommunicationDevices();
+        for (AudioDeviceInfo device : devices) {
+        Log.e("TEST", "*********** Questo DEVE uscire ***********");
+        Log.e("DEVICE",device.toString());
+
+            if (device.getType() == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) {
+                speakerDevice = device;
+                break;
+            }
+        }
+        if (speakerDevice != null) {
+            // Turn speakerphone ON.
+            boolean result = audioManager.setCommunicationDevice(speakerDevice);
+            if (!result) {
+                // Handle error.
+            }
+            // Turn speakerphone OFF.
+            audioManager.clearCommunicationDevice();
+        }
+
         themedReactContext.addLifecycleEventListener(this);
         audioBecomingNoisyReceiver = new AudioBecomingNoisyReceiver(themedReactContext);
 
